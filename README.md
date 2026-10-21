@@ -54,7 +54,7 @@ pip install -r urbanpulse_requirements.txt
 ### 3. Run the dashboard
 
 ```bash
-streamlit run dashboard.py
+python -m streamlit run dashboard.py
 ```
 
 The dashboard may require a local dataset and internet access for external weather services, depending on its configuration.
