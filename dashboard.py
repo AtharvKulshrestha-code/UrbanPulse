@@ -290,19 +290,19 @@ h1,h2,h3,h4{color:var(--text-1)!important;letter-spacing:-.01em}
 [data-testid="stExpander"] summary p{color:var(--text-1)!important;font-weight:600}
 /* Radios → segmented pills (main area) and nav items (sidebar) */
 [data-testid="stRadio"] [role="radiogroup"]{gap:var(--sp-1)}
-[data-testid="stRadio"] label[data-baseweb="radio"]{margin:0;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border-subtle);background:var(--bg-2);cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
-[data-testid="stRadio"] label[data-baseweb="radio"]>div:first-child{display:none!important}
-[data-testid="stRadio"] label[data-baseweb="radio"] p{color:var(--text-2)!important;font-size:var(--fs-sm)!important;font-weight:600!important}
-[data-testid="stRadio"] label[data-baseweb="radio"]:hover{border-color:var(--border-strong)}
-[data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked){background:var(--accent-soft);border-color:var(--accent-line)}
-[data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) p{color:var(--text-1)!important}
+[data-testid="stRadio"] label{margin:0;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border-subtle);background:var(--bg-2);cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+[data-testid="stRadio"] label>div:first-child:not(:has([data-testid="stMarkdownContainer"])){display:none!important}
+[data-testid="stRadio"] label p{color:var(--text-2)!important;font-size:var(--fs-sm)!important;font-weight:600!important}
+[data-testid="stRadio"] label:hover{border-color:var(--border-strong)}
+[data-testid="stRadio"] label:has(input:checked){background:var(--accent-soft);border-color:var(--accent-line)}
+[data-testid="stRadio"] label:has(input:checked) p{color:var(--text-1)!important}
 [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"]{flex-direction:column;gap:2px}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;background:transparent}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]::before{content:"";width:16px;height:16px;flex:none;background:var(--text-3);-webkit-mask:var(--nav-icon) center/contain no-repeat;mask:var(--nav-icon) center/contain no-repeat;transition:background var(--dur) var(--ease)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:hover{background:rgba(255,255,255,.05)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked){background:var(--accent-soft)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked)::before{background:var(--accent)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked)::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;background:transparent}
+[data-testid="stSidebar"] [data-testid="stRadio"] label::before{content:"";width:16px;height:16px;flex:none;background:var(--text-3);-webkit-mask:var(--nav-icon) center/contain no-repeat;mask:var(--nav-icon) center/contain no-repeat;transition:background var(--dur) var(--ease)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover{background:rgba(255,255,255,.05)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked){background:var(--accent-soft)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::before{background:var(--accent)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
 /*NAV*/
 
 /* ── Responsive ──────────────────────────────────────────────── */
@@ -326,7 +326,7 @@ def inject_css():
     """Single entry point for all custom CSS (design tokens are generated from TOKENS)."""
     root = "".join(f"--{k}:{v};" for k, v in TOKENS.items())
     nav = "".join(
-        f'[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:nth-of-type({i + 1}){{--nav-icon:{_icon_mask(n)}}}'
+        f'[data-testid="stSidebar"] [data-testid="stRadio"] label:nth-of-type({i + 1}){{--nav-icon:{_icon_mask(n)}}}'
         for i, n in enumerate(NAV_ICONS)
     )
     st.markdown(_CSS.replace("/*TOKENS*/", root).replace("/*NAV*/", nav), unsafe_allow_html=True)
@@ -438,7 +438,7 @@ def metric_card(label, value, foot="", *, icon_name="gauge", tone="default", del
     )
 
 
-def kpi_grid(cards, min_width=220):
+def kpi_grid(cards, min_width=185):
     """Equal-height, auto-wrapping KPI row."""
     _md(f'<div class="up-kpis" style="--kpi-min:{min_width}px">{"".join(cards)}</div>')
 
@@ -773,7 +773,7 @@ def fetch_open_meteo(locations):
 
     rows = []
     errors = []
-    batch_size = 1  # one coordinate per request keeps the URL short (avoids HTTP 414 behind strict proxies)
+    batch_size = 5
 
     for start in range(0, len(locations), batch_size):
         batch = locations[start:start + batch_size]
@@ -1329,8 +1329,15 @@ elif page == "Live Open-Meteo & Alerts":
             station_locations["latitude"].between(-90, 90) & station_locations["longitude"].between(-180, 180)
         ]
         locations = tuple((str(row.station), float(row.latitude), float(row.longitude)) for row in station_locations.itertuples(index=False))
+        if len(locations) > 10:
+            with panel("Choose stations for the live forecast", f"{len(locations):,} stations are selected in the sidebar. Fetching all of them takes several minutes, so pick up to 40 here.", name="live_pick"):
+                chosen = st.multiselect(
+                    "Stations to fetch", [item[0] for item in locations],
+                    default=[item[0] for item in locations[:10]], max_selections=40,
+                )
+            locations = tuple(item for item in locations if item[0] in chosen)
         if not locations:
-            empty_state("No valid station coordinates", "No valid station coordinates are available for the selected stations.", icon_name="map", tone="warn")
+            empty_state("No stations chosen", "Pick at least one station with valid coordinates to load the live forecast.", icon_name="map", tone="warn")
         else:
             skeleton = st.empty()
             skeleton.markdown(skeleton_html(), unsafe_allow_html=True)
