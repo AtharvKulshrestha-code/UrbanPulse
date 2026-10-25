@@ -1771,4 +1771,13 @@ banner(
     "UrbanPulse combines historical rainfall observations with Open-Meteo model estimates at station coordinates; neither is direct gauge telemetry. It is a monitoring prototype and not an official flood warning service.",
     title="Not a flood warning service",
 )
-_md('<div style="text-align:center;color:var(--text-3);font-size:12px;margin-top:16px">UrbanPulse Rainfall Intelligence · Historical analysis + Open-Meteo model estimates</div>')
+_md(
+    '<div style="text-align:center;color:var(--text-3);font-size:12px;line-height:1.7;margin-top:16px">'
+    'UrbanPulse Rainfall Intelligence · Historical analysis + Open-Meteo model estimates<br>'
+    'Credits: weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0) · '
+    'Map © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>, '
+    '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · '
+    'Icons adapted from <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC) · '
+    'Fonts: Plus Jakarta Sans and JetBrains Mono (SIL OFL). Rainfall data comes from the CSV you load; check its licence.'
+    '</div>'
+)
