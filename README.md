@@ -31,7 +31,7 @@ UrbanPulse/
 ```
 
 ## 📄 Data Format
-The dataset is **not** included in this repository. Obtain it from its original source, subject to its terms of use. Then either:
+The dataset is **not** included in this repository. Obtain it from the [National Water Data Portal](https://nwdp.nwic.gov.in/en/dataset/rainfall-telemetry-hourly-karnataka-department) (dataset: *Rainfall (Telemetry - Hourly), Karnataka Department*), subject to its terms of use. Then either:
 - place it at `data/processed/bengaluru_geo_filtered.csv`, or
 - upload it from the dashboard sidebar.
 
@@ -100,11 +100,11 @@ Then open the address Streamlit prints (usually http://localhost:8501). The live
 - Evaluate potential alerts against reliable reference data
 
 ## 🙏 Credits
+- Rainfall data: "Rainfall (Telemetry - Hourly), Karnataka Department", [National Water Data Portal (NWDP)](https://nwdp.nwic.gov.in/en/dataset/rainfall-telemetry-hourly-karnataka-department). Check the dataset page for its licence and terms of use.
 - Weather forecasts: [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0; free for non-commercial use)
 - Map: © [CARTO](https://carto.com/attributions), © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 - Icons adapted from [Lucide](https://lucide.dev) (ISC licence)
 - Fonts: Plus Jakarta Sans and JetBrains Mono (SIL Open Font License)
-- Rainfall data: supplied by the user. Credit the original source and follow its licence.
 
 ## 👨‍💻 Author
 Atharv Kulshrestha · [AtharvKulshrestha-code](https://github.com/AtharvKulshrestha-code)
