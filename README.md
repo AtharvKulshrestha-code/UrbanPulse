@@ -27,7 +27,6 @@ UrbanPulse/
 ├── dashboard.py
 ├── urbanpulse_requirements.txt
 ├── .streamlit/config.toml    (optional dark theme)
-├── LICENSE                   (optional)
 └── README.md
 ```
 
@@ -77,6 +76,8 @@ git pull
 python -m streamlit run dashboard.py
 ```
 
+No Git? On GitHub choose **Code → Download ZIP**, unzip it, open a terminal in the unzipped folder and run the last two commands of the first-time steps.
+
 Then open the address Streamlit prints (usually http://localhost:8501). The live forecast needs internet access. The historical pages work offline.
 
 ### Troubleshooting
@@ -98,15 +99,12 @@ Then open the address Streamlit prints (usually http://localhost:8501). The live
 - Improve rainfall comparisons across locations
 - Evaluate potential alerts against reliable reference data
 
-## 🙏 Credits & Licences
+## 🙏 Credits
 - Weather forecasts: [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0; free for non-commercial use)
 - Map: © [CARTO](https://carto.com/attributions), © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 - Icons adapted from [Lucide](https://lucide.dev) (ISC licence)
 - Fonts: Plus Jakarta Sans and JetBrains Mono (SIL Open Font License)
 - Rainfall data: supplied by the user. Credit the original source and follow its licence.
-
-## 📜 License
-MIT. See the `LICENSE` file.
 
 ## 👨‍💻 Author
 Atharv Kulshrestha · [AtharvKulshrestha-code](https://github.com/AtharvKulshrestha-code)
