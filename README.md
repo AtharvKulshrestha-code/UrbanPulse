@@ -1,6 +1,6 @@
 # UrbanPulse — Smart Rainfall Monitoring
 
-UrbanPulse is a Python-based dashboard for exploring rainfall patterns across the Bengaluru region using station observations and interactive visualizations.
+UrbanPulse is a Python-based dashboard for exploring rainfall patterns using station observations and interactive visualizations. It was built around Bengaluru and Karnataka rainfall data, and it also works with other station-based rainfall CSVs.
 
 ## 🎯 Problem Statement
 Rainfall data from many monitoring stations is hard to interpret and compare. UrbanPulse puts it in one place so it is easier to understand.
@@ -16,6 +16,7 @@ UrbanPulse turns rainfall observations into visual summaries so users can explor
 - 📈 **Rainfall Trends:** rainfall over time, per station
 - 🧾 **Raw Records:** sortable table with CSV download
 - 🩺 **Data Health:** completeness checks with OK / Warning / Issue badges
+- 📂 **Flexible CSV loading:** detects columns, separators and date formats automatically
 
 ## 🛠️ Technologies Used
 Python, Streamlit (1.39 or newer), Pandas, Altair, PyDeck
@@ -26,10 +27,11 @@ UrbanPulse/
 ├── dashboard.py
 ├── urbanpulse_requirements.txt
 ├── .streamlit/config.toml    (optional dark theme)
+├── LICENSE                   (optional)
 └── README.md
 ```
 
-## 📄 Data format
+## 📄 Data Format
 The dataset is **not** included in this repository. Obtain it from its original source, subject to its terms of use. Then either:
 - place it at `data/processed/bengaluru_geo_filtered.csv`, or
 - upload it from the dashboard sidebar.
@@ -53,30 +55,40 @@ Dates look like `04-08-2023 17:00` (day-month-year).
 | Rainfall (mm) | `Telemetry Hourly Rainfall (mm)`, `rainfall_mm`, `precip_mm` |
 | Latitude / Longitude (optional, needed for the map and live forecast) | `Latitude`, `lat`, `Longitude`, `lon` |
 
-Commas, semicolons, tabs and pipes are all accepted, and day-first, month-first and year-first dates are detected automatically. The sidebar box "How your file was read" shows which columns were used.
+Commas, semicolons, tabs and pipes are all accepted, and day-first, month-first and year-first dates are detected automatically. The sidebar box **"How your file was read"** shows which columns were used and how many rows were kept.
 
-**Not supported yet:** wide monthly files (one row per year, with a column for each month such as `JAN`, `FEB`, …), for example `Rainfall_Data_LL.csv`.
+**Not supported yet:** wide monthly files (one row per year with a column for each month such as `JAN`, `FEB`, …).
 
 ## 🚀 How to Run
-1. Clone the repository
-   ```
-   git clone https://github.com/AtharvKulshrestha-code/UrbanPulse.git
-   cd UrbanPulse
-   ```
-2. Install dependencies
-   ```
-   pip install -r urbanpulse_requirements.txt
-   pip install --upgrade streamlit
-   ```
-3. Run the dashboard
-   ```
-   python -m streamlit run dashboard.py
-   ```
 
-The live forecast needs internet access. The historical pages work offline.
+**First time:**
+```
+git clone https://github.com/AtharvKulshrestha-code/UrbanPulse.git
+cd UrbanPulse
+pip install -r urbanpulse_requirements.txt
+pip install --upgrade streamlit
+python -m streamlit run dashboard.py
+```
+
+**Next times:** don't clone again. Open the folder you already have and run:
+```
+cd UrbanPulse
+git pull
+python -m streamlit run dashboard.py
+```
+
+Then open the address Streamlit prints (usually http://localhost:8501). The live forecast needs internet access. The historical pages work offline.
+
+### Troubleshooting
+- **You see an old version of the dashboard:** an old Streamlit process is still running. Close all terminals running Streamlit, or start on another port: `python -m streamlit run dashboard.py --server.port 8600`.
+- **Menu icons or the dark theme look wrong:** make sure Streamlit is 1.39 or newer (`pip install --upgrade streamlit`).
+- **Live Forecast is slow:** pick fewer stations. The page fetches each chosen station from Open-Meteo.
 
 ## 👥 Potential Users
-Students, researchers, communities and planners who want to explore local rainfall data.
+- Students exploring rainfall data
+- Researchers studying historical rainfall patterns
+- Communities interested in local rainfall information
+- Planners investigating environmental data
 
 > UrbanPulse is an informational tool. It does not replace official weather warnings or emergency guidance.
 
@@ -85,6 +97,16 @@ Students, researchers, communities and planners who want to explore local rainfa
 - Add more verified rainfall monitoring stations
 - Improve rainfall comparisons across locations
 - Evaluate potential alerts against reliable reference data
+
+## 🙏 Credits & Licences
+- Weather forecasts: [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0; free for non-commercial use)
+- Map: © [CARTO](https://carto.com/attributions), © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- Icons adapted from [Lucide](https://lucide.dev) (ISC licence)
+- Fonts: Plus Jakarta Sans and JetBrains Mono (SIL Open Font License)
+- Rainfall data: supplied by the user. Credit the original source and follow its licence.
+
+## 📜 License
+MIT. See the `LICENSE` file.
 
 ## 👨‍💻 Author
 Atharv Kulshrestha · [AtharvKulshrestha-code](https://github.com/AtharvKulshrestha-code)
