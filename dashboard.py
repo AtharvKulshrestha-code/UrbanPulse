@@ -1778,6 +1778,6 @@ _md(
     'Map © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>, '
     '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · '
     'Icons adapted from <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC) · '
-    'Fonts: Plus Jakarta Sans and JetBrains Mono (SIL OFL). Rainfall data comes from the CSV you load; check its licence.'
+    'Fonts: Plus Jakarta Sans and JetBrains Mono (SIL OFL). Rainfall data: Karnataka telemetry hourly rainfall via the <a href="https://nwdp.nwic.gov.in/en/dataset/rainfall-telemetry-hourly-karnataka-department" target="_blank" rel="noopener">National Water Data Portal</a>.'
     '</div>'
 )
