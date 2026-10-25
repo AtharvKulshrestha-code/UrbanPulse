@@ -290,19 +290,19 @@ h1,h2,h3,h4{color:var(--text-1)!important;letter-spacing:-.01em}
 [data-testid="stExpander"] summary p{color:var(--text-1)!important;font-weight:600}
 /* Radios → segmented pills (main area) and nav items (sidebar) */
 [data-testid="stRadio"] [role="radiogroup"]{gap:var(--sp-1)}
-[data-testid="stRadio"] label[data-baseweb="radio"]{margin:0;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border-subtle);background:var(--bg-2);cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
-[data-testid="stRadio"] label[data-baseweb="radio"]>div:first-child{display:none!important}
-[data-testid="stRadio"] label[data-baseweb="radio"] p{color:var(--text-2)!important;font-size:var(--fs-sm)!important;font-weight:600!important}
-[data-testid="stRadio"] label[data-baseweb="radio"]:hover{border-color:var(--border-strong)}
-[data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked){background:var(--accent-soft);border-color:var(--accent-line)}
-[data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) p{color:var(--text-1)!important}
+[data-testid="stRadio"] label{margin:0;padding:6px 14px;border-radius:var(--r-sm);border:1px solid var(--border-subtle);background:var(--bg-2);cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+[data-testid="stRadio"] label>div:first-child:not(:has([data-testid="stMarkdownContainer"])){display:none!important}
+[data-testid="stRadio"] label p{color:var(--text-2)!important;font-size:var(--fs-sm)!important;font-weight:600!important}
+[data-testid="stRadio"] label:hover{border-color:var(--border-strong)}
+[data-testid="stRadio"] label:has(input:checked){background:var(--accent-soft);border-color:var(--accent-line)}
+[data-testid="stRadio"] label:has(input:checked) p{color:var(--text-1)!important}
 [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"]{flex-direction:column;gap:2px}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;background:transparent}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]::before{content:"";width:16px;height:16px;flex:none;background:var(--text-3);-webkit-mask:var(--nav-icon) center/contain no-repeat;mask:var(--nav-icon) center/contain no-repeat;transition:background var(--dur) var(--ease)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:hover{background:rgba(255,255,255,.05)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked){background:var(--accent-soft)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked)::before{background:var(--accent)}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked)::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:0;background:transparent}
+[data-testid="stSidebar"] [data-testid="stRadio"] label::before{content:"";width:16px;height:16px;flex:none;background:var(--text-3);-webkit-mask:var(--nav-icon) center/contain no-repeat;mask:var(--nav-icon) center/contain no-repeat;transition:background var(--dur) var(--ease)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:hover{background:rgba(255,255,255,.05)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked){background:var(--accent-soft)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::before{background:var(--accent)}
+[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked)::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
 /*NAV*/
 
 /* ── Responsive ──────────────────────────────────────────────── */
@@ -326,7 +326,7 @@ def inject_css():
     """Single entry point for all custom CSS (design tokens are generated from TOKENS)."""
     root = "".join(f"--{k}:{v};" for k, v in TOKENS.items())
     nav = "".join(
-        f'[data-testid="stSidebar"] [data-testid="stRadio"] label[data-baseweb="radio"]:nth-of-type({i + 1}){{--nav-icon:{_icon_mask(n)}}}'
+        f'[data-testid="stSidebar"] [data-testid="stRadio"] label:nth-of-type({i + 1}){{--nav-icon:{_icon_mask(n)}}}'
         for i, n in enumerate(NAV_ICONS)
     )
     st.markdown(_CSS.replace("/*TOKENS*/", root).replace("/*NAV*/", nav), unsafe_allow_html=True)
@@ -438,7 +438,7 @@ def metric_card(label, value, foot="", *, icon_name="gauge", tone="default", del
     )
 
 
-def kpi_grid(cards, min_width=220):
+def kpi_grid(cards, min_width=185):
     """Equal-height, auto-wrapping KPI row."""
     _md(f'<div class="up-kpis" style="--kpi-min:{min_width}px">{"".join(cards)}</div>')
 
@@ -671,11 +671,78 @@ def find_default_csv():
     return None
 
 
+def _pick_column(columns, exact, keywords=(), exclude=()):
+    """Find a column by exact (case-insensitive) name first, then by keyword in the header."""
+    lowered = {str(c).strip().lower(): c for c in columns}
+    for name in exact:
+        if name.lower() in lowered:
+            return lowered[name.lower()]
+    for key in keywords:
+        for low, original in lowered.items():
+            if key in low and not any(bad in low for bad in exclude):
+                return original
+    return None
+
+
+def _read_csv_flexible(source):
+    """Read a CSV with the common separators/encodings (comma, semicolon, tab, pipe; UTF-8 or Latin-1)."""
+    last_error = None
+    for kwargs in (
+        {},
+        {"encoding": "latin-1"},
+        {"sep": None, "engine": "python"},
+        {"sep": None, "engine": "python", "encoding": "latin-1"},
+    ):
+        try:
+            if hasattr(source, "seek"):
+                source.seek(0)
+            frame = pd.read_csv(source, skip_blank_lines=True, **kwargs)
+        except (UnicodeDecodeError, ValueError) as exc:
+            last_error = exc
+            continue
+        if frame.shape[1] > 1:
+            return frame
+        last_error = ValueError("The file has only one column, so it does not look like a table.")
+    raise ValueError(f"Could not read this file as a CSV table ({last_error}).")
+
+
+def _parse_timestamps(series):
+    """Parse dates without guessing blindly: try day-first and month-first, keep whichever reads more rows."""
+    import warnings
+
+    if pd.api.types.is_datetime64_any_dtype(series):
+        return series
+    text = series.astype("string").str.strip()
+    best = None
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        is_iso = text.str.match(r"^\d{4}[-/.]\d{1,2}[-/.]\d{1,2}").fillna(False).mean() > 0.9
+        for dayfirst in ((False, True) if is_iso else (True, False)):  # year-first dates are never day-first
+            parsed = pd.to_datetime(text, errors="coerce", dayfirst=dayfirst)
+            bad = int(parsed.isna().sum())
+            if best is None or bad < best[0]:
+                best = (bad, parsed)
+        if best[0] > 0:  # mixed formats inside one column
+            try:
+                mixed = pd.to_datetime(text, errors="coerce", dayfirst=True, format="mixed")
+                if int(mixed.isna().sum()) < best[0]:
+                    best = (int(mixed.isna().sum()), mixed)
+            except (ValueError, TypeError):
+                pass
+    parsed = best[1]
+    try:
+        if getattr(parsed.dt, "tz", None) is not None:
+            parsed = parsed.dt.tz_convert("Asia/Kolkata").dt.tz_localize(None)
+    except (AttributeError, TypeError):
+        pass
+    return parsed
+
+
 def load_rainfall(uploaded_file=None):
-    """Load and normalize the actual rainfall dataset, tolerating common header variants."""
+    """Load and normalize a rainfall CSV. Column names, separators and date formats are detected, not assumed."""
     source_label = "Uploaded CSV"
     if uploaded_file is not None:
-        raw = pd.read_csv(uploaded_file, skip_blank_lines=True)
+        raw = _read_csv_flexible(uploaded_file)
     else:
         path = find_default_csv()
         if path is None:
@@ -683,37 +750,39 @@ def load_rainfall(uploaded_file=None):
                 "No default rainfall CSV was found. Expected one of: "
                 + ", ".join(str(p.relative_to(BASE)) for p in CANDIDATE_PATHS)
             )
-        raw = pd.read_csv(path, skip_blank_lines=True)
+        raw = _read_csv_flexible(path)
         source_label = str(path.relative_to(BASE))
 
     raw.columns = [str(c).strip() for c in raw.columns]
-    # Match column names case-insensitively after trimming whitespace.
-    by_lower = {c.lower(): c for c in raw.columns}
+    cols = list(raw.columns)
 
-    def find_col(candidates):
-        for candidate in candidates:
-            if candidate.lower() in by_lower:
-                return by_lower[candidate.lower()]
-        return None
-
-    time_col = find_col([TIME_COL, "timestamp", "datetime", "date time", "date"])
-    station_col = find_col([STATION_COL, "station_name", "sensor_id", "station id"])
-    rain_col = find_col([RAIN_COL, "rainfall_mm", "rainfall (mm)", "rainfall", "hourly rainfall (mm)"])
-    lat_col = find_col([LAT_COL, "latitude", "lat"])
-    lon_col = find_col([LON_COL, "longitude", "lon", "long"])
+    time_col = _pick_column(
+        cols, [TIME_COL, "timestamp", "datetime", "date time", "date", "time"],
+        ("timestamp", "datetime", "acquisition", "observ", "time", "date"), exclude=("lgd", "code", "station", "state"),
+    )
+    station_col = _pick_column(
+        cols, [STATION_COL, "station_name", "station name", "sensor_id", "station id", "site", "location"],
+        ("station", "site", "gauge", "gage", "sensor", "location"), exclude=("lgd", "code", "state"),
+    )
+    rain_col = _pick_column(
+        cols, [RAIN_COL, "rainfall_mm", "rainfall (mm)", "rainfall", "hourly rainfall (mm)", "precipitation", "precip"],
+        ("rain", "precip"), exclude=("station", "state", "time", "date", "lgd"),
+    )
+    lat_col = _pick_column(cols, [LAT_COL, "latitude", "lat", "lat_dd"], ("latitude",))
+    lon_col = _pick_column(cols, [LON_COL, "longitude", "lon", "lng", "long", "lon_dd"], ("longitude",))
 
     missing = []
     if time_col is None:
-        missing.append(TIME_COL)
+        missing.append("a date/time column")
     if station_col is None:
-        missing.append(STATION_COL)
+        missing.append("a station name column")
     if rain_col is None:
-        missing.append(RAIN_COL)
+        missing.append("a rainfall column")
     if missing:
         raise ValueError(
-            "CSV is missing required columns: "
-            + ", ".join(missing)
-            + ". The real dataset should contain station, timestamp, and rainfall columns."
+            "Could not find " + ", ".join(missing) + ". Columns in your file: "
+            + ", ".join(cols[:25]) + (" …" if len(cols) > 25 else "")
+            + ". Rename the matching columns to something like Station, Timestamp and Rainfall (mm), or tell the developer which columns to use."
         )
 
     rename = {time_col: "timestamp", station_col: "station", rain_col: "rainfall_mm"}
@@ -729,8 +798,9 @@ def load_rainfall(uploaded_file=None):
     if "longitude" in df.columns:
         keep.append("longitude")
     df = df[keep].copy()
+    rows_read = len(df)
 
-    df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+    df["timestamp"] = _parse_timestamps(df["timestamp"])
     df["station"] = df["station"].astype("string").str.strip()
     df["rainfall_mm"] = pd.to_numeric(df["rainfall_mm"], errors="coerce")
     if "latitude" in df.columns:
@@ -746,8 +816,9 @@ def load_rainfall(uploaded_file=None):
     df["gap_hours"] = (
         df.groupby("station")["timestamp"].diff().dt.total_seconds() / 3600
     )
+    df.attrs["rows_read"] = rows_read
+    df.attrs["columns"] = {"Date/time": time_col, "Station": station_col, "Rainfall": rain_col, **({"Latitude": lat_col} if lat_col else {}), **({"Longitude": lon_col} if lon_col else {})}
     return df, source_label
-
 
 
 OPEN_METEO_API = "https://api.open-meteo.com/v1/forecast"
@@ -773,7 +844,7 @@ def fetch_open_meteo(locations):
 
     rows = []
     errors = []
-    batch_size = 1  # one coordinate per request keeps the URL short (avoids HTTP 414 behind strict proxies)
+    batch_size = 5
 
     for start in range(0, len(locations), batch_size):
         batch = locations[start:start + batch_size]
@@ -983,6 +1054,10 @@ with st.sidebar:
         f'<div class="up-datacard"><div class="up-datacard-name up-mono">{esc(source_label)}</div>'
         f'<div class="up-datacard-meta">{len(df):,} valid records · {len(stations):,} stations</div></div>'
     )
+    if df.attrs.get("columns"):
+        with st.expander("How your file was read"):
+            st.markdown("\n".join(f"- **{k}** ← `{v}`" for k, v in df.attrs["columns"].items()))
+            st.caption(f"{df.attrs.get('rows_read', len(df)):,} rows read · {len(df):,} used. Rows with an unreadable date, station or rainfall value are skipped.")
     sidebar_label("Filters", "filter")
     selected_stations = st.multiselect(
         "Stations",
@@ -1329,8 +1404,15 @@ elif page == "Live Open-Meteo & Alerts":
             station_locations["latitude"].between(-90, 90) & station_locations["longitude"].between(-180, 180)
         ]
         locations = tuple((str(row.station), float(row.latitude), float(row.longitude)) for row in station_locations.itertuples(index=False))
+        if len(locations) > 10:
+            with panel("Choose stations for the live forecast", f"{len(locations):,} stations are selected in the sidebar. Fetching all of them takes several minutes, so pick up to 40 here.", name="live_pick"):
+                chosen = st.multiselect(
+                    "Stations to fetch", [item[0] for item in locations],
+                    default=[item[0] for item in locations[:10]], max_selections=40,
+                )
+            locations = tuple(item for item in locations if item[0] in chosen)
         if not locations:
-            empty_state("No valid station coordinates", "No valid station coordinates are available for the selected stations.", icon_name="map", tone="warn")
+            empty_state("No stations chosen", "Pick at least one station with valid coordinates to load the live forecast.", icon_name="map", tone="warn")
         else:
             skeleton = st.empty()
             skeleton.markdown(skeleton_html(), unsafe_allow_html=True)
